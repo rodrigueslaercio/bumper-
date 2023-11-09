@@ -1,6 +1,7 @@
 import os, time
 from dotenv import load_dotenv
 from keep_alive import keep_alive
+import schedule
 
 try:
     import discum
@@ -22,9 +23,13 @@ slashsCmd = bot.getSlashCommands(BOT_ID).json()
 s = SlashCommander(slashsCmd)
 data = s.get(['bump'])
 
+def bump():
+    bot.triggerSlashCommand(BOT_ID, CHANNEL_ID, GUILD_ID, data)
+    print("Bumped!")
+
+schedule.every(10).minutes.do(bump)
+
 keep_alive()
 while True:
-    print("Online.")
-    bot.triggerSlashCommand(BOT_ID, CHANNEL_ID, GUILD_ID, data)
-    bot.gateway.run(auto_reconnect=True)
-    time.sleep(600)
+    schedule.run_pending()
+    time.sleep(1)
