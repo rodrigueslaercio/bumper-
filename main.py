@@ -1,6 +1,7 @@
 import os, time
 from dotenv import load_dotenv
 from keep_alive import keep_alive
+from multiprocessing import Process
 import schedule
 
 try:
@@ -26,10 +27,17 @@ data = s.get(['bump'])
 def bump():
     bot.triggerSlashCommand(BOT_ID, CHANNEL_ID, GUILD_ID, data)
     print("Bumped!")
+    
+def schuduler():
+    schedule.every(10).minutes.do(bump)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
-schedule.every(10).minutes.do(bump)
+def runner():
+    bot.gateway.run(auto_reconnect=True)
 
 keep_alive()
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+
+Process(target=schuduler).start()
+Process(target=runner).start()
