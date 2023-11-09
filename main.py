@@ -22,9 +22,9 @@ slashsCmd = bot.getSlashCommands(BOT_ID).json()
 s = SlashCommander(slashsCmd)
 data = s.get(['bump'])
 
+keep_alive()
 while True:
     print("Online.")
     bot.triggerSlashCommand(BOT_ID, CHANNEL_ID, GUILD_ID, data)
     time.sleep(7200)
-    keep_alive()
     bot.gateway.run(auto_reconnect=True)
